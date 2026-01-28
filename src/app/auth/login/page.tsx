@@ -1,7 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SignInForm } from "@/features/auth/components/SignInForm"
 import { SignUpForm } from "@/features/auth/components/SignUpForm"
+import { SocialAuthButtons } from "@/features/auth/components/SocialAuthButtons"
 
 export default function LoginPage() {
   return (
@@ -18,6 +26,12 @@ export default function LoginPage() {
           <CardContent>
             <SignInForm />
           </CardContent>
+
+          <Separator />
+
+          <CardFooter>
+            <SocialAuthButtons />
+          </CardFooter>
         </Card>
       </TabsContent>
 

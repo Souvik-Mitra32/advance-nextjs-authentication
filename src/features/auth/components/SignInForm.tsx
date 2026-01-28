@@ -103,7 +103,7 @@ export function SignInForm() {
           <Field orientation="vertical">
             <Button type="submit" disabled={formState.isSubmitting}>
               <LoadingSwap isLoading={formState.isSubmitting}>
-                Submit
+                Sign In
               </LoadingSwap>
             </Button>
           </Field>
