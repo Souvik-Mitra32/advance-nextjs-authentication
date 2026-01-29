@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client"
 
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { BetterAuthActionButton } from "@/features/auth/components/BetterAuthActionButton"
 
 export default function HomePage() {
   const { data: session, isPending: isLoading } = authClient.useSession()
@@ -13,11 +14,7 @@ export default function HomePage() {
   if (isLoading)
     return (
       <div className="my-6 px-4 max-w-md mx-auto">
-        <div className="text-center space-y-6">
-          <h1 className="text-3xl font-bold">
-            <Skeleton className="h-7.5 w-[18ch] rounded-full" />
-          </h1>
-        </div>
+        <Skeleton className="h-7.5 w-[18ch] mx-auto rounded-full" />
       </div>
     )
 
@@ -34,10 +31,14 @@ export default function HomePage() {
         ) : (
           <>
             <h1 className="text-3xl font-bold">Welcome {session.user.name}</h1>
-            {/* TODO: Add loading state */}
-            <Button variant="destructive" onClick={() => authClient.signOut()}>
+            <BetterAuthActionButton
+              variant="destructive"
+              action={() => {
+                return authClient.signOut()
+              }}
+            >
               Sign out
-            </Button>
+            </BetterAuthActionButton>
           </>
         )}
       </div>

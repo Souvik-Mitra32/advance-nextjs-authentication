@@ -1,3 +1,10 @@
+"use client"
+
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+
+import { authClient } from "@/lib/auth-client"
+
 import {
   Card,
   CardContent,
@@ -12,6 +19,14 @@ import { SignUpForm } from "@/features/auth/components/SignUpForm"
 import { SocialAuthButtons } from "@/features/auth/components/SocialAuthButtons"
 
 export default function LoginPage() {
+  const router = useRouter()
+
+  useEffect(() => {
+    authClient.getSession().then((session) => {
+      if (session.data !== null) router.push("/")
+    })
+  }, [router])
+
   return (
     <Tabs defaultValue="signIn" className="w-full max-w-md mx-auto my-6 px-4">
       <TabsList>
