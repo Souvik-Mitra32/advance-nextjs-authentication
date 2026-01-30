@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
@@ -14,7 +13,6 @@ import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -30,8 +28,11 @@ const formSchema = z.object({
     .max(24, "Must be maximum 24 characters"),
 })
 
-export function SignUpForm() {
-  const router = useRouter()
+export function SignUpForm({
+  openEmailVerificationTab,
+}: {
+  openEmailVerificationTab: (email: string) => void
+}) {
   const { control, handleSubmit, formState } = useForm<
     z.infer<typeof formSchema>
   >({
@@ -44,17 +45,17 @@ export function SignUpForm() {
   })
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    await authClient.signUp.email(
+    const res = await authClient.signUp.email(
       { ...data, callbackURL: "/" },
       {
         onError: (error) => {
           toast.error(error.error.message || "Failed to sign up")
         },
-        onSuccess: () => {
-          router.push("/")
-        },
       },
     )
+
+    if (res.error == null && !res.data.user.emailVerified)
+      openEmailVerificationTab(data.email)
   }
 
   return (

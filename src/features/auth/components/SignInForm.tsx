@@ -14,7 +14,6 @@ import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -46,7 +45,11 @@ export function SignInForm() {
       { ...data, callbackURL: "/" },
       {
         onError: (error) => {
-          toast.error(error.error.message || "Failed to sign in")
+          toast.error(error.error.message || "Failed to sign in", {
+            description:
+              error.error.message === "Email not verified" &&
+              "Please check your email and click the link to verify your account.",
+          })
         },
         onSuccess: () => {
           router.push("/")

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 import { authClient } from "@/lib/auth-client"
@@ -17,9 +17,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SignInForm } from "@/features/auth/components/SignInForm"
 import { SignUpForm } from "@/features/auth/components/SignUpForm"
 import { SocialAuthButtons } from "@/features/auth/components/SocialAuthButtons"
+import { EmailVerificationTabContent } from "@/features/auth/components/EmailVerificationTabContent"
+
+type Tab = "signIn" | "signUp" | "emailVerification"
 
 export default function LoginPage() {
   const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [selectedTab, setSelectedTab] = useState<Tab>("signIn")
+
+  function openEmailVerificationTab(email: string) {
+    setEmail(email)
+    setSelectedTab("emailVerification")
+  }
 
   useEffect(() => {
     authClient.getSession().then((session) => {
@@ -28,11 +38,18 @@ export default function LoginPage() {
   }, [router])
 
   return (
-    <Tabs defaultValue="signIn" className="w-full max-w-md mx-auto my-6 px-4">
-      <TabsList>
-        <TabsTrigger value="signIn">Sign In</TabsTrigger>
-        <TabsTrigger value="signUp">Sign Up</TabsTrigger>
-      </TabsList>
+    <Tabs
+      value={selectedTab}
+      onValueChange={(t) => setSelectedTab(t as Tab)}
+      className="w-full max-w-md mx-auto my-6 px-4"
+    >
+      {(selectedTab === "signIn" || selectedTab === "signUp") && (
+        <TabsList>
+          <TabsTrigger value="signIn">Sign In</TabsTrigger>
+          <TabsTrigger value="signUp">Sign Up</TabsTrigger>
+        </TabsList>
+      )}
+
       <TabsContent value="signIn">
         <Card>
           <CardHeader>
@@ -56,7 +73,23 @@ export default function LoginPage() {
             <CardTitle className="text-2xl font-semibold">Sign Up</CardTitle>
           </CardHeader>
           <CardContent>
-            <SignUpForm />
+            <SignUpForm openEmailVerificationTab={openEmailVerificationTab} />
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="emailVerification">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold">
+              Verify your email address
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <EmailVerificationTabContent
+              email={email}
+              setSelectedTab={setSelectedTab}
+            />
           </CardContent>
         </Card>
       </TabsContent>
