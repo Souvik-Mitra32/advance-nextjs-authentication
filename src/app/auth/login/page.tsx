@@ -8,6 +8,7 @@ import { authClient } from "@/lib/auth-client"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,8 +19,9 @@ import { SignInForm } from "@/features/auth/components/SignInForm"
 import { SignUpForm } from "@/features/auth/components/SignUpForm"
 import { SocialAuthButtons } from "@/features/auth/components/SocialAuthButtons"
 import { EmailVerificationTabContent } from "@/features/auth/components/EmailVerificationTabContent"
+import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm"
 
-type Tab = "signIn" | "signUp" | "emailVerification"
+type Tab = "signIn" | "signUp" | "emailVerification" | "forgotPassword"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -56,7 +58,10 @@ export default function LoginPage() {
             <CardTitle className="text-2xl font-semibold">Sign In</CardTitle>
           </CardHeader>
           <CardContent>
-            <SignInForm />
+            <SignInForm
+              openEmailVerificationTab={openEmailVerificationTab}
+              openForgotPasswordTab={() => setSelectedTab("forgotPassword")}
+            />
           </CardContent>
 
           <Separator />
@@ -88,7 +93,25 @@ export default function LoginPage() {
           <CardContent>
             <EmailVerificationTabContent
               email={email}
-              setSelectedTab={setSelectedTab}
+              openSignInTab={() => setSelectedTab("signIn")}
+            />
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="forgotPassword">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold">
+              Forgot password
+            </CardTitle>
+            <CardDescription>
+              We will send a password reset link to your email address.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ForgotPasswordForm
+              openSignInTab={() => setSelectedTab("signIn")}
             />
           </CardContent>
         </Card>

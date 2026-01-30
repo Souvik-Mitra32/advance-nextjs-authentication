@@ -28,7 +28,13 @@ const formSchema = z.object({
     .max(24, "Must be maximum 24 characters"),
 })
 
-export function SignInForm() {
+export function SignInForm({
+  openEmailVerificationTab,
+  openForgotPasswordTab,
+}: {
+  openEmailVerificationTab: (email: string) => void
+  openForgotPasswordTab: () => void
+}) {
   const router = useRouter()
   const { control, handleSubmit, formState } = useForm<
     z.infer<typeof formSchema>
@@ -45,11 +51,9 @@ export function SignInForm() {
       { ...data, callbackURL: "/" },
       {
         onError: (error) => {
-          toast.error(error.error.message || "Failed to sign in", {
-            description:
-              error.error.message === "Email not verified" &&
-              "Please check your email and click the link to verify your account.",
-          })
+          if (error.error.code === "EMAIL_NOT_VERIFIED")
+            openEmailVerificationTab(data.email)
+          toast.error(error.error.message || "Failed to sign in")
         },
         onSuccess: () => {
           router.push("/")
@@ -88,7 +92,19 @@ export function SignInForm() {
             name="password"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                <div className="flex justify-between items-center gap-4">
+                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+
+                  <Button
+                    onClick={openForgotPasswordTab}
+                    type="button"
+                    variant="link"
+                    size="sm"
+                    className="text-sm text-muted-foreground font-normal underline"
+                  >
+                    Forgot password?
+                  </Button>
+                </div>
                 <PasswordInput
                   {...field}
                   id={field.name}

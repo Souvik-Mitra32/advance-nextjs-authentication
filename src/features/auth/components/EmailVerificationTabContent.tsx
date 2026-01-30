@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/button"
 
 export function EmailVerificationTabContent({
   email,
-  setSelectedTab,
+  openSignInTab,
 }: {
   email: string
-  setSelectedTab: (tab: "signUp") => void
+  openSignInTab: () => void
 }) {
   const [timeToNextResend, setTimeToNextResend] = useState(
     DEFAULT_RESEND_EMAIL_TIMER,
@@ -65,7 +65,7 @@ export function EmailVerificationTabContent({
           Resend {timeToNextResend > 0 && `(${timeToNextResend})`}
         </BetterAuthActionButton>
 
-        <Button variant="ghost" onClick={() => setSelectedTab("signUp")}>
+        <Button variant="ghost" onClick={openSignInTab}>
           Back
         </Button>
       </div>
