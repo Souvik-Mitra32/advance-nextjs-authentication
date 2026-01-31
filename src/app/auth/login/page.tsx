@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/features/auth/lib/auth-client"
 
 import {
   Card,

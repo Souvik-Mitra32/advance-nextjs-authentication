@@ -6,12 +6,11 @@ import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
 
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/features/auth/lib/auth-client"
 
 import { Button } from "@/components/ui/button"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import { toast } from "sonner"
-import { Input } from "@/components/ui/input"
 import { PasswordInput } from "@/components/ui/password-input"
 import {
   Field,

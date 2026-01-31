@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/features/auth/lib/auth-client"
 
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,7 +23,7 @@ export default function HomePage() {
       <div className="text-center space-y-6">
         {session == null ? (
           <>
-            <h1 className="text-3xl font-bold">Welcome to Our App</h1>
+            <h1 className="text-3xl font-bold">Welcome to Better Auth</h1>
             <Button size="lg" asChild>
               <Link href="/auth/login">Sign in</Link>
             </Button>

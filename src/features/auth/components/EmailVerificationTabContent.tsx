@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/features/auth/lib/auth-client"
 import { BetterAuthActionButton } from "./BetterAuthActionButton"
 import { DEFAULT_RESEND_EMAIL_TIMER } from "../data/constants"
 import { Button } from "@/components/ui/button"
