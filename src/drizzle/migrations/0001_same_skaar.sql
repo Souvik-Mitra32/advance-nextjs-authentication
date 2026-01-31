@@ -1,0 +1,1 @@
+ALTER TABLE "user" ALTER COLUMN "favourite_number" SET DEFAULT 0;

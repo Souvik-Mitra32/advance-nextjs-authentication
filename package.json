@@ -11,7 +11,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "email:dev": "cp .env ./node_modules/react-email && email dev --dir src/features/email --port 3001"
+    "email:dev": "cp .env ./node_modules/react-email && email dev --dir src/features/email --port 3001",
+    "auth:generate": "npx @better-auth/cli@latest generate --config ./src/features/auth/lib/auth.ts --output ./src/drizzle/schemas/new-auth-schema.ts -y"
   },
   "dependencies": {
     "@arcjet/ip": "^1.0.0",

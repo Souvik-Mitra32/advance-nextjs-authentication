@@ -18,14 +18,16 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
+import { NumberInput } from "@/components/ui/number-input"
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.email().min(1, "Email is required"),
+  email: z.email({ error: "Email is required" }),
   password: z
-    .string()
+    .string({ error: "Password is required" })
     .min(6, "Must be minimum 6 characters")
     .max(24, "Must be maximum 24 characters"),
+  favouriteNumber: z.number({ error: "Favourite number is required" }).int(),
 })
 
 export function SignUpForm({
@@ -110,6 +112,26 @@ export function SignUpForm({
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                 <PasswordInput
+                  {...field}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                />
+                {fieldState.error && (
+                  <FieldError
+                    errors={[{ message: fieldState.error.message }]}
+                  />
+                )}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="favouriteNumber"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Favourite number</FieldLabel>
+                <NumberInput
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
