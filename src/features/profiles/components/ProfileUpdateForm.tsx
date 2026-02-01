@@ -1,13 +1,13 @@
 "use client"
 
 import { useForm, Controller } from "react-hook-form"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
 
 import { authClient } from "@/features/auth/lib/auth-client"
 
 import { Button } from "@/components/ui/button"
-import { PasswordInput } from "@/components/ui/password-input"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
@@ -23,41 +23,56 @@ import { NumberInput } from "@/components/ui/number-input"
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.email({ error: "Email is required" }),
-  password: z
-    .string({ error: "Password is required" })
-    .min(6, "Must be minimum 6 characters")
-    .max(24, "Must be maximum 24 characters"),
   favouriteNumber: z.number({ error: "Favourite number is required" }).int(),
 })
 
-export function SignUpForm({
-  openEmailVerificationTab,
+export function ProfileUpdateForm({
+  user,
 }: {
-  openEmailVerificationTab: (email: string) => void
+  user: { name: string; email: string; favouriteNumber: number }
 }) {
+  const router = useRouter()
+
   const { control, handleSubmit, formState } = useForm<
     z.infer<typeof formSchema>
   >({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
+    defaultValues: user,
   })
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    const res = await authClient.signUp.email(
-      { ...data, callbackURL: "/" },
-      {
-        onError: (error) => {
-          toast.error(error.error.message || "Failed to sign up")
-        },
-      },
-    )
+    const promises = [
+      authClient.updateUser({
+        name: data.name,
+        favouriteNumber: data.favouriteNumber,
+      }),
+    ]
 
-    if (res.error == null && !res.data.user.emailVerified)
-      openEmailVerificationTab(data.email)
+    if (user.email !== data.email)
+      promises.push(
+        authClient.changeEmail({
+          newEmail: data.email,
+          callbackURL: "/profile",
+        }),
+      )
+
+    const res = await Promise.all(promises)
+    const updateUserResult = res[0]
+    const changeEmailResult = res[1] ?? { error: false }
+
+    if (updateUserResult.error) {
+      toast.error(updateUserResult.error.message || "Failed to update profile")
+    } else if (changeEmailResult.error) {
+      toast.error(changeEmailResult.error.message || "Failed to change email")
+    } else {
+      if (user.email !== data.email) {
+        toast.success("Verify your new email address to complete the change")
+      } else {
+        toast.success("Profile updated successfully")
+      }
+
+      router.refresh()
+    }
   }
 
   return (
@@ -107,26 +122,6 @@ export function SignUpForm({
 
           <Controller
             control={control}
-            name="password"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                <PasswordInput
-                  {...field}
-                  id={field.name}
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.error && (
-                  <FieldError
-                    errors={[{ message: fieldState.error.message }]}
-                  />
-                )}
-              </Field>
-            )}
-          />
-
-          <Controller
-            control={control}
             name="favouriteNumber"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
@@ -150,9 +145,7 @@ export function SignUpForm({
               type="submit"
               disabled={formState.isSubmitting || !formState.isDirty}
             >
-              <LoadingSwap isLoading={formState.isSubmitting}>
-                Sign Up
-              </LoadingSwap>
+              <LoadingSwap isLoading={formState.isSubmitting}>Save</LoadingSwap>
             </Button>
           </Field>
         </FieldGroup>

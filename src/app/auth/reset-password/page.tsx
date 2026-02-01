@@ -129,7 +129,10 @@ export default function ResetPasswordPage() {
                 />
 
                 <Field>
-                  <Button type="submit" disabled={formState.isSubmitting}>
+                  <Button
+                    type="submit"
+                    disabled={formState.isSubmitting || !formState.isDirty}
+                  >
                     <LoadingSwap isLoading={formState.isSubmitting}>
                       Continue
                     </LoadingSwap>

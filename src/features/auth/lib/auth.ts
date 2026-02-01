@@ -12,6 +12,16 @@ import {
 
 export const auth = betterAuth({
   user: {
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailConfirmation: async ({ user, url, newEmail }) => {
+        if (user.email !== newEmail)
+          await sendVerificationEmail({
+            user: { ...user, email: newEmail },
+            url,
+          })
+      },
+    },
     additionalFields: {
       favouriteNumber: {
         type: "number",

@@ -78,7 +78,10 @@ export function ForgotPasswordForm({
           />
 
           <Field orientation="horizontal">
-            <Button type="submit" disabled={formState.isSubmitting}>
+            <Button
+              type="submit"
+              disabled={formState.isSubmitting || !formState.isDirty}
+            >
               <LoadingSwap isLoading={formState.isSubmitting}>Send</LoadingSwap>
             </Button>
 

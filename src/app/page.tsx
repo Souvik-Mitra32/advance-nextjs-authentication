@@ -31,14 +31,20 @@ export default function HomePage() {
         ) : (
           <>
             <h1 className="text-3xl font-bold">Welcome {session.user.name}</h1>
-            <BetterAuthActionButton
-              variant="destructive"
-              action={() => {
-                return authClient.signOut()
-              }}
-            >
-              Sign out
-            </BetterAuthActionButton>
+            <div className="flex flex-wrap justify-center items-center gap-2">
+              <Button asChild>
+                <Link href="/profile">Profile</Link>
+              </Button>
+
+              <BetterAuthActionButton
+                variant="destructive"
+                action={() => {
+                  return authClient.signOut()
+                }}
+              >
+                Sign out
+              </BetterAuthActionButton>
+            </div>
           </>
         )}
       </div>
