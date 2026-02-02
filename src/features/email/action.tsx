@@ -5,6 +5,7 @@ import { resend } from "@/features/email/lib/resend"
 import ResetPasswordEmail from "./components/ResetPasswordEmail"
 import AccountVerificationEmail from "./components/AccountVerificationEmail"
 import WelcomeEmail from "./components/WelcomeEmail"
+import AccountDeleteConfirmationEmail from "./components/AccountDeleteConfirmationEmail"
 
 export async function sendPasswordResetEmail({
   user,
@@ -42,5 +43,20 @@ export async function sendWelcomeEmail(user: { name: string; email: string }) {
     to: user.email,
     subject: "Welcome",
     react: <WelcomeEmail user={user} />,
+  })
+}
+
+export async function sendAccountDeleteConfirmationEmail({
+  user,
+  url,
+}: {
+  user: { name: string; email: string }
+  url: string
+}) {
+  resend.emails.send({
+    from: `Support <${process.env.RESEND_SENDER_EMAIL as string}>`,
+    to: user.email,
+    subject: "Delete confirmation",
+    react: <AccountDeleteConfirmationEmail user={user} url={url} />,
   })
 }

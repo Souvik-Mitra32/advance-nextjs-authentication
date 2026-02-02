@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js"
 
 import { db } from "@/drizzle/db"
 import {
+  sendAccountDeleteConfirmationEmail,
   sendPasswordResetEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
@@ -26,6 +27,12 @@ export const auth = betterAuth({
       favouriteNumber: {
         type: "number",
         required: true,
+      },
+    },
+    deleteUser: {
+      enabled: true,
+      sendDeleteAccountVerification: async ({ user, url }) => {
+        await sendAccountDeleteConfirmationEmail({ user, url })
       },
     },
   },

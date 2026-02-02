@@ -11,8 +11,8 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "platform-lookaside.fbsbx.com",
-        pathname: "/platform/profilepic/**",
+        hostname: "cdn.discordapp.com",
+        pathname: "/avatars/**",
       },
     ],
   },
