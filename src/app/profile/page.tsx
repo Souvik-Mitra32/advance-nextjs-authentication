@@ -27,6 +27,7 @@ import {
 import { ProfileUpdateForm } from "@/features/profiles/components/ProfileUpdateForm"
 import { SetPasswordButton } from "@/features/profiles/components/SetPasswordButton"
 import { PasswordUpdateForm } from "@/features/profiles/components/PasswordUpdateForm"
+import { SessionManagement } from "@/features/profiles/components/SessionManagement"
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -104,8 +105,33 @@ export default async function ProfilePage() {
             <SecurityTab email={session.user.email} />
           </LoadingSuspense>
         </TabsContent>
+
+        <TabsContent value="sessions">
+          <LoadingSuspense>
+            <SessionsTab currentSessionToken={session.session.token} />
+          </LoadingSuspense>
+        </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+async function SessionsTab({
+  currentSessionToken,
+}: {
+  currentSessionToken: string
+}) {
+  const sessions = await auth.api.listSessions({ headers: await headers() })
+
+  return (
+    <Card>
+      <CardContent>
+        <SessionManagement
+          sessions={sessions}
+          currentSessionToken={currentSessionToken}
+        />
+      </CardContent>
+    </Card>
   )
 }
 
