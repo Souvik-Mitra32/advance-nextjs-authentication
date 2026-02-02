@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { authClient } from "@/features/auth/lib/auth-client"
 import {
   SUPPORTED_OAUTH_PROVIDERS,

@@ -28,6 +28,7 @@ import { ProfileUpdateForm } from "@/features/profiles/components/ProfileUpdateF
 import { SetPasswordButton } from "@/features/profiles/components/SetPasswordButton"
 import { PasswordUpdateForm } from "@/features/profiles/components/PasswordUpdateForm"
 import { SessionManagement } from "@/features/profiles/components/SessionManagement"
+import { AccountLinking } from "@/features/profiles/components/AccountLinking"
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -111,8 +112,29 @@ export default async function ProfilePage() {
             <SessionsTab currentSessionToken={session.session.token} />
           </LoadingSuspense>
         </TabsContent>
+
+        <TabsContent value="accounts">
+          <LoadingSuspense>
+            <AccountsTab />
+          </LoadingSuspense>
+        </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+async function AccountsTab() {
+  const accounts = await auth.api.listUserAccounts({ headers: await headers() })
+  const nonCredentialAccounts = accounts.filter(
+    (a) => a.providerId !== "credential",
+  )
+
+  return (
+    <Card>
+      <CardContent>
+        <AccountLinking currentAccounts={nonCredentialAccounts} />
+      </CardContent>
+    </Card>
   )
 }
 
