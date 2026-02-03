@@ -12,6 +12,7 @@ import { PasswordInput } from "@/components/ui/password-input"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
+import { PasskeyButton } from "./PasskeyButton"
 import {
   Field,
   FieldError,
@@ -128,6 +129,8 @@ export function SignInForm({
                 Sign In
               </LoadingSwap>
             </Button>
+
+            <PasskeyButton />
           </Field>
         </FieldGroup>
       </FieldSet>
