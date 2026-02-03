@@ -6,5 +6,12 @@ import {
 import { auth } from "./auth"
 
 export const authClient = createAuthClient({
-  plugins: [inferAdditionalFields<typeof auth>(), twoFactorClient()],
+  plugins: [
+    inferAdditionalFields<typeof auth>(),
+    twoFactorClient({
+      onTwoFactorRedirect: () => {
+        window.location.href = "/auth/2fa"
+      },
+    }),
+  ],
 })
