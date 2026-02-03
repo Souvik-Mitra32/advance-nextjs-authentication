@@ -30,6 +30,7 @@ import { PasswordUpdateForm } from "@/features/profiles/components/PasswordUpdat
 import { SessionManagement } from "@/features/profiles/components/SessionManagement"
 import { AccountLinking } from "@/features/profiles/components/AccountLinking"
 import { AccountDeletion } from "@/features/profiles/components/AccountDeletion"
+import { TwoFactorAuth } from "@/features/profiles/components/TwoFactorAuth"
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -104,7 +105,10 @@ export default async function ProfilePage() {
 
         <TabsContent value="security">
           <LoadingSuspense>
-            <SecurityTab email={session.user.email} />
+            <SecurityTab
+              email={session.user.email}
+              isTwoFactorEnabled={session.user.twoFactorEnabled ?? false}
+            />
           </LoadingSuspense>
         </TabsContent>
 
@@ -169,24 +173,44 @@ async function SessionsTab({
   )
 }
 
-async function SecurityTab({ email }: { email: string }) {
+async function SecurityTab({
+  email,
+  isTwoFactorEnabled,
+}: {
+  email: string
+  isTwoFactorEnabled: boolean
+}) {
   const accounts = await auth.api.listUserAccounts({ headers: await headers() })
   const hasPasswordAccount = accounts.some((a) => a.providerId === "credential")
 
   return (
     <div className="space-y-6">
       {hasPasswordAccount ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Change Password</CardTitle>
-            <CardDescription>
-              Updated your password for improved security.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <PasswordUpdateForm />
-          </CardContent>
-        </Card>
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle>Change Password</CardTitle>
+              <CardDescription>
+                Updated your password for improved security.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PasswordUpdateForm />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-wrap justify-between items-center gap-2">
+              <CardTitle>Two-Factor Authentication</CardTitle>
+              <Badge variant={isTwoFactorEnabled ? "default" : "secondary"}>
+                {isTwoFactorEnabled ? "Enabled" : "Disabled"}
+              </Badge>
+            </CardHeader>
+            <CardContent>
+              <TwoFactorAuth isEnabled={isTwoFactorEnabled} />
+            </CardContent>
+          </Card>
+        </>
       ) : (
         <Card>
           <CardHeader>
