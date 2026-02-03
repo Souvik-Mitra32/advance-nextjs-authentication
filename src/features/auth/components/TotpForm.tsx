@@ -64,6 +64,7 @@ export function TotpForm() {
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
+                  autoComplete="off"
                 />
                 {fieldState.error && (
                   <FieldError

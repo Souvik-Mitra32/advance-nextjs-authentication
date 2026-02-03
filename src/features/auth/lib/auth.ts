@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth"
 import { createAuthMiddleware } from "better-auth/api"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
+import { twoFactor } from "better-auth/plugins"
+import { passkey } from "@better-auth/passkey"
 
 import { db } from "@/drizzle/db"
 import {
@@ -10,7 +12,6 @@ import {
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "@/features/email/action"
-import { twoFactor } from "better-auth/plugins"
 
 export const auth = betterAuth({
   user: {
@@ -74,7 +75,7 @@ export const auth = betterAuth({
     },
   },
   appName: "Better Auth",
-  plugins: [nextCookies(), twoFactor()],
+  plugins: [nextCookies(), twoFactor(), passkey()],
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
