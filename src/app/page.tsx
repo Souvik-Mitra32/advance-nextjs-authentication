@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 
 import { authClient } from "@/features/auth/lib/auth-client"
@@ -10,6 +11,15 @@ import { BetterAuthActionButton } from "@/features/auth/components/BetterAuthAct
 
 export default function HomePage() {
   const { data: session, isPending: isLoading } = authClient.useSession()
+  const [hasAdminPermission, setHasAdminPermission] = useState(false)
+
+  useEffect(() => {
+    authClient.admin
+      .hasPermission({ permission: { user: ["list"] } })
+      .then(({ data }) => {
+        setHasAdminPermission(data?.success ?? false)
+      })
+  }, [])
 
   if (isLoading)
     return (
@@ -35,6 +45,12 @@ export default function HomePage() {
               <Button asChild>
                 <Link href="/profile">Profile</Link>
               </Button>
+
+              {hasAdminPermission && (
+                <Button variant="outline" asChild>
+                  <Link href="/admin">Admin</Link>
+                </Button>
+              )}
 
               <BetterAuthActionButton
                 variant="destructive"

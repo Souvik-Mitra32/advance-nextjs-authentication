@@ -74,6 +74,7 @@ export function SignUpForm({
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
+                  autoComplete="off"
                 />
                 {fieldState.error && (
                   <FieldError
@@ -95,6 +96,7 @@ export function SignUpForm({
                   type="email"
                   id={field.name}
                   aria-invalid={fieldState.invalid}
+                  autoComplete="off"
                 />
                 {fieldState.error && (
                   <FieldError
@@ -115,6 +117,7 @@ export function SignUpForm({
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
+                  autoComplete="off"
                 />
                 {fieldState.error && (
                   <FieldError
