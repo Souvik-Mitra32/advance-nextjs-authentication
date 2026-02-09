@@ -6,6 +6,7 @@ import ResetPasswordEmail from "./components/ResetPasswordEmail"
 import AccountVerificationEmail from "./components/AccountVerificationEmail"
 import WelcomeEmail from "./components/WelcomeEmail"
 import AccountDeleteConfirmationEmail from "./components/AccountDeleteConfirmationEmail"
+import OrganizationInvitationEmail from "./components/OrganizationInvitationEmail"
 
 export async function sendPasswordResetEmail({
   user,
@@ -58,5 +59,30 @@ export async function sendAccountDeleteConfirmationEmail({
     to: user.email,
     subject: "Delete confirmation",
     react: <AccountDeleteConfirmationEmail user={user} url={url} />,
+  })
+}
+
+export async function sendOrganizationInvitationEmail({
+  email,
+  invitation,
+  inviter,
+  organization,
+}: {
+  email: string
+  inviter: { name: string }
+  organization: { name: string }
+  invitation: { id: string }
+}) {
+  resend.emails.send({
+    from: `Support <${process.env.RESEND_SENDER_EMAIL as string}>`,
+    to: email,
+    subject: `You're invited to join the organization ${organization.name}`,
+    react: (
+      <OrganizationInvitationEmail
+        inviter={inviter}
+        organization={organization}
+        invitation={invitation}
+      />
+    ),
   })
 }

@@ -3,11 +3,12 @@ import {
   inferAdditionalFields,
   twoFactorClient,
   adminClient,
+  organizationClient,
 } from "better-auth/client/plugins"
 import { passkeyClient } from "@better-auth/passkey/client"
 
 import { auth } from "./auth"
-import { ac, user } from "../../admin/lib/permissions"
+import { ac, user, admin } from "../../admin/lib/permissions"
 
 export const authClient = createAuthClient({
   plugins: [
@@ -20,7 +21,8 @@ export const authClient = createAuthClient({
     passkeyClient(),
     adminClient({
       ac,
-      roles: { user },
+      roles: { user, admin },
     }),
+    organizationClient(),
   ],
 })

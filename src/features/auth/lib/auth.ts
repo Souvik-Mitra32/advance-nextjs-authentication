@@ -2,17 +2,22 @@ import { betterAuth } from "better-auth"
 import { createAuthMiddleware } from "better-auth/api"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
-import { admin, twoFactor } from "better-auth/plugins"
+import {
+  admin as adminPlugin,
+  organization,
+  twoFactor,
+} from "better-auth/plugins"
 import { passkey } from "@better-auth/passkey"
 
 import { db } from "@/drizzle/db"
 import {
   sendAccountDeleteConfirmationEmail,
+  sendOrganizationInvitationEmail,
   sendPasswordResetEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "@/features/email/action"
-import { ac, user } from "../../admin/lib/permissions"
+import { ac, user, admin } from "../../admin/lib/permissions"
 
 export const auth = betterAuth({
   user: {
@@ -80,9 +85,24 @@ export const auth = betterAuth({
     nextCookies(),
     twoFactor(),
     passkey(),
-    admin({
+    adminPlugin({
       ac,
-      roles: { user },
+      roles: { user, admin },
+    }),
+    organization({
+      sendInvitationEmail: async ({
+        email,
+        organization,
+        inviter,
+        invitation,
+      }) => {
+        await sendOrganizationInvitationEmail({
+          email,
+          organization,
+          inviter: inviter.user,
+          invitation,
+        })
+      },
     }),
   ],
   database: drizzleAdapter(db, {
@@ -101,5 +121,25 @@ export const auth = betterAuth({
         }
       }
     }),
+  },
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (userSession) => {
+          const membership = await db.query.member.findFirst({
+            where: (t, f) => f.eq(t.userId, userSession.userId),
+            orderBy: (t, f) => f.desc(t.createdAt),
+            columns: { organizationId: true },
+          })
+
+          return {
+            data: {
+              ...userSession,
+              activeOrganizationId: membership?.organizationId,
+            },
+          }
+        },
+      },
+    },
   },
 })

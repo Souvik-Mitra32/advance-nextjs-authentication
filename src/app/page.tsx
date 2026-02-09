@@ -52,6 +52,10 @@ export default function HomePage() {
                 </Button>
               )}
 
+              <Button variant="secondary" asChild>
+                <Link href="/organizations">Organizations</Link>
+              </Button>
+
               <BetterAuthActionButton
                 variant="destructive"
                 action={() => {
